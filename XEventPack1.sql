@@ -63,10 +63,10 @@ IF (@FailedQueries > 0)
 	BEGIN
 		CREATE EVENT SESSION [FailedQueries] ON SERVER 
 			ADD EVENT sqlserver.error_reported (ACTION(sqlserver.client_hostname, sqlserver.database_name, sqlserver.sql_text, sqlserver.username) WHERE ([severity] > (10))) ADD TARGET package0.event_file (
-			SET filename = N'C:\XEventSessions\FailedQueries.xel'
+			SET filename = @chkdirectory + N'\FailedQueries.xel'
 			,max_file_size = (5)
 			,max_rollover_files = (5)
-			,metadatafile = N'C:\XEventSessions\FailedQueries.xem'
+			,metadatafile = @chkdirectory + N'\FailedQueries.xem'
 			)
 			WITH (
 					MAX_MEMORY = 4096 KB
@@ -99,7 +99,7 @@ IF (@UserQueries > 0)
     WHERE ([sqlserver].[like_i_sql_unicode_string]([sqlserver].[client_app_name],N'%Query%')))
 		 
 		ADD TARGET package0.event_file (
-			SET filename = N'C:\XEventSessions\User Run Queries.xel'
+			SET filename = @chkdirectory + N'\User Run Queries.xel'
 			,max_file_size = (5)
 			)
 			WITH (
@@ -137,7 +137,7 @@ IF (@TempCreation > 0)
 					AND [ddl_phase] = (1)
 					)
 				) ADD TARGET package0.event_file (
-				SET filename = N'C:\XEventSessions\TempTableCreation.xel'
+				SET filename = @chkdirectory + N'\TempTableCreation.xel'
 				,max_file_size = (32768)
 				,max_rollover_files = (10)
 				)
@@ -181,10 +181,10 @@ IF (@TempGrowth > 0)
 				AND [session_id] > (50)
 				)
 			) ADD TARGET package0.event_file (
-			SET filename = N'C:\XEventSessions\TempDBGrowth.xel'
+			SET filename = @chkdirectory +N'\TempDBGrowth.xel'
 			,max_file_size = (10)
 			,max_rollover_files = (10)
-			,metadatafile = N'C:\XEventSessions\TempDBGrowth.xem'
+			,metadatafile = @chkdirectory +N'\TempDBGrowth.xem'
 			)
 			WITH (
 					MAX_MEMORY = 4096 KB
